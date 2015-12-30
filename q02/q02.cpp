@@ -109,6 +109,8 @@ int main(int argc, char* argv[]) {
 
 	if(found == 0)
 		cout << "No pairs could be found!" << endl;
+	else
+		cout << "Found " << found << " pairs that sum to T=" << T << endl;
 
 	return 0;
 }
