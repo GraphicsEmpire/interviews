@@ -11,6 +11,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -30,6 +31,24 @@ int comma_delimited_to_vector(const string& input, vector<T>& output) {
 	return output.size();
 }
 
+template<typename T>
+int vector_to_comma_delimited(const vector<T>& input, string& output) {
+	ostringstream os;
+	//os << "[";
+
+	for(int i=0; i < (int)input.size(); i++) {
+		os << input[i];
+		if(i < (int)(input.size() - 1))
+			os << ",";
+	}
+
+	//os << "]";
+
+	output = os.str();
+
+	return input.size();
+}
+
 int main(int argc, char* argv[]) {
 
 	if(argc != 3) {
@@ -46,12 +65,50 @@ int main(int argc, char* argv[]) {
 	}
 
 	v1 = v1.substr(1, v1.length() - 2);
-	cout << "A is: " << v1 << endl;
+	cout << "[Before Sort] A is: " << v1 << endl;
 
 	int T = 0;
 	s2 >> T;
 
 	cout << "T is = " << T << endl;
+
+	vector<int> vlist1;
+	comma_delimited_to_vector<int>(v1, vlist1);
+
+	//best sorting algorithm can do in O(nlog(n))
+	std::sort(vlist1.begin(), vlist1.end());
+
+	string v1sorted;
+	vector_to_comma_delimited(vlist1, v1sorted);
+
+	cout << "[After Sort] A is: " << v1sorted << endl;
+
+	int i=0;
+	int j=vlist1.size() - 1;
+	int found = 0;
+
+	while(i < j) {
+		int a = vlist1[i];
+		int b = vlist1[j];
+		int sum = a + b;
+
+		cout << " >> examine (" << a << ", " << b << ")" << endl;
+		if(sum == T) {
+			cout << "Output is: a = " << a << " ,b = " << b << endl;
+			found ++;
+			i++;
+		}
+		else {
+			int d = abs(sum - T);
+			if(d < a)
+				j --;
+			else
+				i ++;
+		}
+	}
+
+	if(found == 0)
+		cout << "No pairs could be found!" << endl;
 
 	return 0;
 }
